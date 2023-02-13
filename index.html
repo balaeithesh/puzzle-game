@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body{
+            text-align: center;
+        }
+        .fullimg img{
+            height: 360px;
+            width: 360px;
+            background-size: 360px 360px;
+        }
+        #box{
+            height: 360px;
+            width: 360px;
+            display: flex;
+            flex-wrap: wrap;
+            margin: 30px;
+            cursor: pointer;
+        }
+        #box img{
+            height: 119px;
+            width: 119px;
+            border: 1px solid lightblue;
+        }
+        .design{
+            display: flex;
+            justify-content: center;
+            margin-top: 120px;
+        }
+        .fullimg, h3{
+            padding: 30px;
+        }
+        h3{
+            padding-top: 200px;
+        }
+        h1{
+            padding-top: 80px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Puzzle Game</h1>
+    <div class="design">
+    <div class="fullimg"><img src="micky mouse.jpg"></div>
+    <h3>Moves :<span id="change"> 0</span></h3>
+    <div id="box"></div>
+    </div>
+    
+
+    <script>
+        var tile = document.getElementById('tile');
+        var change = document.getElementById('change');
+
+        let rows = 3;
+        let columns = 3;
+
+        let moves = 0;
+        let curtile;
+        let othertile;
+
+        // var cropimages = ['1','2','3','4','5','6','7','8','9']
+        var cropimages = ["4","2","8","5","1","6","7","9","3"]
+
+        function load(){
+            for(r=0; r<rows; r++){
+                for(c=0; c<columns; c++){
+                    let tile = document.createElement('img');
+                    tile.id = r.toString()+'-'+c.toString();
+                    tile.src = cropimages.shift()+'.jpg';
+
+                    tile.addEventListener('dragstart',dragstart);
+                    tile.addEventListener('dragover',dragover);
+                    tile.addEventListener('dragenter',dragenter);
+                    tile.addEventListener('dragleave',dragleave);
+                    tile.addEventListener('drop',drop);
+                    tile.addEventListener('dragend',dragend);
+
+                    box.appendChild(tile);
+                }
+            }
+        }
+        load();
+
+        function dragstart(){
+            curtile = this;
+        }
+        function dragover(e){
+            e.preventDefault();
+        }
+        function dragenter(e){
+            e.preventDefault();
+        }
+        function dragleave(e){
+            e.preventDefault();
+        }
+        function drop(){
+            othertile = this;
+        }
+        function dragend(){
+            let curCoords = curtile.id.split("-");
+            let r =parseInt(curCoords[0]);
+            let c =parseInt(curCoords[1]);
+
+            let otherCoords = othertile.id.split("-");
+            let r2 = parseInt(otherCoords[0]);
+            let c2 = parseInt(otherCoords[1]);
+
+
+            let moveleft = r == r2 && c2 == c-1;
+            let moveright = r == r2 && c2 == c+1;
+
+            let moveup = c == c2 && r2 == r-1;
+            let movedown = c == c2 && r2 == r+1;
+
+            let isadjacent = moveleft || moveright || moveup || movedown
+
+            if(isadjacent){
+                let curimage = curtile.src; 
+                let otherimage = othertile.src;
+
+                othertile.src = curimage;
+                curtile.src = otherimage;
+
+                moves += 1;
+                change.innerText = moves;
+            }
+        }
+    </script>
+</body>
+</html>
